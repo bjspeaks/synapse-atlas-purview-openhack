@@ -2,6 +2,7 @@ import atlasclient
 import requests
 import json
 from requests.structures import CaseInsensitiveDict
+from atlasclient.client import Atlas
 
 
 '''
@@ -26,7 +27,7 @@ print(bearer_token)
 
 
 '''
- calling the atlas api 
+ calling the atlas api-using the http calls
 '''
 atlas_url = "https://e12-purview-e12.catalog.purview.azure.com/api/atlas/v2/types/typedefs"
 
@@ -38,3 +39,18 @@ headers["Authorization"] = "Token ​​"+bearer_token
 resp = requests.get(url,headers)
 #result = requests.get(atlas_url,headers)
 print(resp)
+
+
+'''
+connect using Atlas client
+'''
+client = Atlas('https://e12-purview-e12.catalog.purview.azure.com', )
+client.entity_guid(<guid>).status
+params = {'typeName': 'DataSet', 'attrName': 'name', 'attrValue': 'data', 'offset': '1', 'limit':'10'}
+search_results = client.search_attribute(**params)
+for s in search_results:
+    for e in s.entities:
+        print(e.name)
+        print(e.guid)
+
+
