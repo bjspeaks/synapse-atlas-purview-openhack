@@ -36,7 +36,8 @@ headers["Authorization"] = "Token ​​"+bearer_token
 
 resp = requests.get(url,headers)
 #result = requests.get(atlas_url,headers)
-print(resp)
+print(resp.text)
+
 
 '''
 connect using Atlas client
