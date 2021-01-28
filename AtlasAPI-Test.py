@@ -1,9 +1,13 @@
-import atlasclient
 import requests
 import json
 from requests.structures import CaseInsensitiveDict
-from atlasclient.client import Atlas
+
+
 #from atlasclient.client import ENTRY_POINTS
+'''
+Use this for swagger testing
+https://atlas.apache.org/api/v2/ui/index.html
+'''
 
 '''
  Get the bearer Token
@@ -22,7 +26,7 @@ myobj = {'grant_type': 'client_credentials',
 
 auth = requests.post(url,myobj)
 bearer_token = auth.json()["access_token"]
-print(bearer_token)
+#print(bearer_token)
 
 '''
  calling the atlas api-using the http calls
@@ -30,24 +34,50 @@ print(bearer_token)
 
 atlas_url = "https://e12-purview-e12.catalog.purview.azure.com/api/atlas/v2/types/typedefs"
 
+
 headers = CaseInsensitiveDict()
-headers["Accept"] = "application/json"
-headers["Authorization"] = "Token ​​"+bearer_token
 
-resp = requests.get(url,headers)
-#result = requests.get(atlas_url,headers)
-print(resp.text)
+#headers["Accept"] = "application/json"
+#headers["Authorization"] = "Token "+bearer_token
 
+
+headers= {"Authorization": "Bearer " + bearer_token,
+          "Content-Type": "application/json"
+          }
+
+print(headers)
+parameters = {}
+
+resp = requests.get(atlas_url,params= parameters,headers= headers)
+print(resp)
+results = json.loads(resp.text)
+#print(results)
 
 '''
-connect using Atlas client
-
-client = Atlas('https://e12-purview-e12.catalog.purview.azure.com',port=21433, username='e12purviewspn', password='9e.GH~jL5Z1~.dRW8A8M67uPo-0Ps_16u~')
-client.entity_guid('atlasclient.models.EntityGuid')
-params = {'typeName': 'DataSet', 'attrName': 'e12adlsgen2e12', 'attrValue': 'challengeone', 'offset': '1', 'limit':'10'}
-search_results = client.search_attribute(**params)
-for s in search_results:
-    for e in s.entities:
-         print(e.name)
-         print(e.guid)
+ calling the search atlas api-using the http calls
 '''
+
+atlas_url = "https://e12-purview-e12.catalog.purview.azure.com/api/atlas/v2/search/advanced"
+
+
+headers = CaseInsensitiveDict()
+
+#headers["Accept"] = "application/json"
+#headers["Authorization"] = "Token "+bearer_token
+
+
+headers= {"Authorization": "Bearer " + bearer_token,
+          "Content-Type": "application/json"
+          }
+
+print(headers)
+
+parameters = {'keywords':'sales',
+              'limit':2,
+              'offset':1
+              }
+
+resp = requests.post(atlas_url,json=parameters,headers=headers)
+print(resp)
+results = json.loads(resp.text)
+print(results)
